@@ -235,12 +235,12 @@
 <div style="width: 80%; max-width: 600px; margin: 50px auto; background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
   <h1 style="font-size: 2rem; margin-bottom: 1rem; text-align: center;">Contact <span style="color: #007bff;">Me</span></h1>
   <p style="text-align: center; margin-bottom: 2rem; color: #555;">If you're interested in working together or have any questions, please fill out the form below and I'll get back to you as soon as possible.</p>
-  <form id="contactForm">
-    <input type="text" id="name" name="name" placeholder="Your Name" required
+  <form id="contactForm" method="post" action="send_email.php">
+    <input type="text" name="name" placeholder="Your Name" required
            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; color: #333; margin-bottom: 15px;">
-    <input type="email" id="email" name="email" placeholder="Your Email" required
+    <input type="email" name="email" placeholder="Your Email" required
            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; color: #333; margin-bottom: 15px;">
-    <textarea id="message" name="message" rows="5" placeholder="Your Message" required
+    <textarea name="message" rows="5" placeholder="Your Message" required
               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; color: #333; margin-bottom: 15px;"></textarea>
     <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 15px; font-size: 18px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; width: 100%;">Send Message</button>
     <p id="successMessage" style="display: none; margin-top: 1rem; text-align: center; font-size: 16px; color: green;">Your message has been sent successfully!</p>
@@ -251,25 +251,27 @@
 <script>
   document.getElementById('contactForm').addEventListener('submit', function(event) {
     event.preventDefault();
-
-    // Get form data
-    var name = document.getElementById('name').value;
-    var email = document.getElementById('email').value;
-    var message = document.getElementById('message').value;
-
-    // Basic validation
-    if (!name || !email || !message) {
-      document.getElementById('errorMessage').textContent = 'Please fill out all fields.';
+    
+    var formData = new FormData(this);
+    
+    fetch('send_email.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+      if (data === 'Success') {
+        document.getElementById('successMessage').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+      } else {
+        document.getElementById('errorMessage').style.display = 'block';
+        document.getElementById('successMessage').style.display = 'none';
+      }
+    })
+    .catch(error => {
       document.getElementById('errorMessage').style.display = 'block';
-      return;
-    }
-
-    // Show success message (for demonstration purposes)
-    document.getElementById('successMessage').style.display = 'block';
-    document.getElementById('errorMessage').style.display = 'none';
-
-    // Clear the form
-    document.getElementById('contactForm').reset();
+      document.getElementById('successMessage').style.display = 'none';
+    });
   });
 </script>
 
