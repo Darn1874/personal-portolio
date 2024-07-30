@@ -23,3 +23,10 @@ menu_item.forEach((item) => {
 		mobile_menu.classList.toggle('active');
 	});
 });
+
+document.querySelectorAll('.team-list').forEach(function (scrollElement) {
+      scrollElement.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        scrollElement.scrollLeft += e.deltaY;
+      });
+    });
